@@ -1,0 +1,17 @@
+            if($is_hardware_id == null){
+                //Hardware id Belum Terdaftar pada sesi hari ini
+                echo 'sesi : '.$id_sesi_by_random.', nis : '.$nis_lokal.' = NULL';
+            }else{
+                //Hardware id Sudah Terdaftar pada sesi hari ini
+                //next cek nis
+//                echo 'sesi : '.$id_sesi_by_random.', nis : '.$nis_lokal.' = NOT NULL';
+                $cek_absensi = $this->absensi_model->tampilAbsensiByHardwareSesi($hardware_id,$id_sesi_by_random);
+                $is_nis = $cek_absensi[0]->nis_lokal;
+                if($is_nis == $nis_lokal){
+                    //nis sistem sama dengan nis hp
+                    echo 'nis sistem : '.$is_nis.' == nis hp :'.$nis_lokal;
+                }else{
+                    //nis sistem TIDAK sama dengan nis hp
+                    echo 'nis sistem : '.$is_nis.' != nis hp :'.$nis_lokal;
+                }
+            }

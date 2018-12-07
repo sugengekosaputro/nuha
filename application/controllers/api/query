@@ -1,0 +1,1 @@
+="INSERT INTO tb_santri (nis_lokal,nis_lokal_ernis,nik,nama_lengkap,tempat_lahir,tanggal_lahir,jenis_kelamin, agama,hobi,cita_cita,jumlah_sdr,tanggal_masuk,kls_madrasah_diniyah) VALUES ('"&B3&"','"&C3&"','"&D3&"','"&E3&"','"&F3&"','"&G3&"','"&H3&"','"&I3&"','"&J3&"','"&K3&"','"&L3&"','"&M3&"','"&O3&"');"

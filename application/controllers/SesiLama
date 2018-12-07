@@ -1,0 +1,61 @@
+public function index_put()
+    {
+        $random = $this->put('random');
+		$nis_lokal = $this->put('nis_lokal');
+        $hardware_id = $this->put('hardware_id');
+        $tanggal = date('Y-m-d');
+        
+        $get_id_sesi = $this->sesi_model->tampilSesiByTanggal($tanggal);
+        $id_sesi_by_tgl = $get_id_sesi[0]->id_sesi;
+
+        $cek_random = $this->sesi_model->tampilSesiByRandom($random);
+        $id_sesi_by_random = $cek_random[0]->id_sesi;
+        if ($cek_random) {
+            //random tersedia
+            $cek_absensi = $this->absensi_model->tampilAbsensiByHardwareIdNisSesi($hardware_id,$nis_lokal,$id_sesi_by_random);
+            $cek_nis = $this->absensi_model->tampilAbsensiByHardwareSesi($hardware_id,$id_sesi_by_random);
+            if($cek_absensi){
+                //Hardware ID ada dalam sistem
+                $hw_id_sistem = $cek_absensi[0]->hardware_id;
+                $nis_sistem = $cek_nis[0]->nis_lokal;
+                // if($hw_id_sistem == $hardware_id){
+                //     //Device Sama
+                //     echo 'Silakan Update';
+                // }else{
+                //     //Device Berbeda
+                //     $this->response([
+                //         'status' => FALSE,
+                //         'message' => 'WARNING DETEKSI KECURANGAN ABSENSI'
+                //     ],REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+                // }
+
+                if($nis_sistem == $nis_lokal){
+                    echo 'monggo lanjut';
+                }else{
+                    echo 'gak boleh ganti device';
+                }
+            }else{
+                //Hardware ID Kosong
+                $cek_akun = $this->absensi_model->cekAkunIdByNis($nis_lokal,$id_sesi_by_random);
+                print_r($cek_akun);
+                if($cek_akun){
+                    //Pada Sesi Yang Sama Nis dan Hardware Berbeda
+                    if($hardware_id_sistem != $hardware_id){
+                        $this->response([
+                            'status' => FALSE,
+                            'message' => 'WARNING DETEKSI KECURANGAN ABSENSI ID '.$nis_lokal
+                        ],REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+                    }
+                }else{
+                    //Pada Sesi Yang Sama Nis dan Hardware Yang Sama
+                    echo 'Tidak Ada Kecurangan Silahkan Buat Baru';
+                }
+            }
+        } else {
+            //random expired
+            $this->response([
+                'status' => FALSE,
+                'message' => 'QR Expired'
+            ],REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+        }
+    }
